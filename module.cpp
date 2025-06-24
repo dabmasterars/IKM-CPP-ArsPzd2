@@ -6,7 +6,7 @@ bool isNumber(const string& s) {//проверка, является ли стр
     for (char c : s)//проверяем каждый знак, является ли он числом
         if (!isdigit(c))
             return 0;
-    return 1; // If all characters are digits, return true
+    return 1;
 }
 bool dominoCheck(string s){//проверка, является ли строка числом от 0 до 6
     if(s=="0"||s=="1"||s=="2"||s=="3"||s=="4"||s=="5"||s=="6")
