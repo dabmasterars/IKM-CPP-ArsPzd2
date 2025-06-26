@@ -7,9 +7,6 @@ int main() {
     Dominode* head = nullptr;//начало списка
     cout<<"Составление домино в ряд (ИКМ C++, зад. 6)\nВведите количество костей домино (от 2 и больше): ";
     string nstring; cin>>nstring;
-    
-    //проверка на д***ка (неопытного пользователя)
-    
     if (!isNumber(nstring)){//проверяем, является ли число положительным номером
         cout<<"Данные не являются числом или число отрицательное";
         exit(0);
@@ -41,15 +38,5 @@ int main() {
         int second=stoi(temp);
         addDomino(head, first, second);
     }
-    //if (canArrangeDominoes(head)) {
-    //    cout << "Можно уложить кости так: ";
-    //    while (head!=NULL){
-    //        cout<<head->first<<head->second<<" ";
-    //        head=head->next;
-    //    }
-    //}else{
-    //    cout << "Невозможно расставить кости в ряд" << endl;
-    //}
-    //freeDominoList(head);//освобождаем память
     arrangeDominoes(head,n);//считаем, можно ли сделать ряд; если да, то выводим
 }

@@ -31,8 +31,8 @@ bool arrangeDominoes(Dominode* head, unsigned long long int n) {//проверк
     int degree[7] = {0};//массив для подчёта числа паттернов (a[i]=x - паттерн с i точками встречается x раз)
     Dominode* temp = head;
     while (temp){//идём по списку и заносим точки в массив
-        degree[temp->first]++;
-        degree[temp->second]++;
+        degree[temp->pattern[0]]++;
+        degree[temp->pattern[1]]++;
         temp=temp->next;
     }
     
@@ -57,7 +57,7 @@ bool arrangeDominoes(Dominode* head, unsigned long long int n) {//проверк
     }
     
     if (oddCount==0){//если крайние паттерны могут быть любыми, берём любые числа
-        nBuffer=head->first; nBuffer=head->next->first;
+        nBuffer=head->pattern[0]; nBuffer=head->next->pattern[0];
     }
     
     //cout<<"Крайние паттерны: "<<nBuffer<<" "<<nBuffer2<<endl;//дебуг
@@ -65,24 +65,20 @@ bool arrangeDominoes(Dominode* head, unsigned long long int n) {//проверк
     Dominode* headbuffer=head;//сохраняем начало списка в буфер для сброса позиции в списке
     
     while (head) {//идём по списку и ищем нод с крайним паттерном; выводим его и помечаем, как прочитанный
-        if (head->first==nBuffer||head->second==nBuffer){
-            if (head->first==nBuffer2||head->second==nBuffer2){//если оба крайних паттерна в одном и том же домино, разложить нельзя
+        if (head->pattern[0]==nBuffer||head->pattern[1]==nBuffer){
+            if (head->pattern[0]==nBuffer2||head->pattern[1]==nBuffer2){//если оба крайних паттерна в одном и том же домино, разложить нельзя
                 cout << "Невозможно расставить кости в ряд" << endl;
                 exit(0);
             }
             else{
-                if (head->second==nBuffer){//переворачиваем домино, если искомый паттерн стоит справа
-                    int temp=head->second;
-                    head->second=head->first;
-                    head->first=temp;
+                if (head->pattern[1]==nBuffer){//переворачиваем домино, если искомый паттерн стоит справа
+                    int temp=head->pattern[1];
+                    head->pattern[1]=head->pattern[0];
+                    head->pattern[0]=temp;
                 }
-                cout<<"Можно уложить кости так: "<<head->first<<head->second;
-                patbuffer=head->second;
+                cout<<"Можно уложить кости так: "<<head->pattern[0]<<head->pattern[1];
+                patbuffer=head->pattern[1];
                 head->used=1;//помечаем кость домино как использованную
-                // Dominode* temp = head;
-                // head->next=headbuffer;
-                // headbuffer->prev=temp;//домино с крайним паттерном переносим в начало
-                // head->prev=NULL;
                 break;
             }
         }
@@ -92,14 +88,14 @@ bool arrangeDominoes(Dominode* head, unsigned long long int n) {//проверк
     while(n>1){//ищем и выводим домино, которые должны стоять между двумя домино с крайними паттернами
         //идём по списку и проверяем, чтобы домино не было использовано и чтобы в нём не было второго крайнего паттерна
         //продолжаем, пока количество костей домино не будет равно 1 (последняя кость содержит второй крайний паттерн)
-        if ((head->first==patbuffer||head->second==patbuffer)&&(!head->used)&&(head->first!=nBuffer2&&head->second!=nBuffer2)){
-            if (head->second==patbuffer){//переворачиваем домино, если искомый паттерн стоит справа
-                int temp=head->second;
-                head->second=head->first;
-                head->first=temp;
+        if ((head->pattern[0]==patbuffer||head->pattern[1]==patbuffer)&&(!head->used)&&(head->pattern[0]!=nBuffer2&&head->pattern[1]!=nBuffer2)){
+            if (head->pattern[1]==patbuffer){//переворачиваем домино, если искомый паттерн стоит справа
+                int temp=head->pattern[1];
+                head->pattern[1]=head->pattern[0];
+                head->pattern[0]=temp;
             }
-            cout<<", "<<head->first<<head->second;
-            patbuffer=head->second;
+            cout<<", "<<head->pattern[0]<<head->pattern[1];
+            patbuffer=head->pattern[1];
             head->used=1;
             n--;
         }
@@ -109,13 +105,13 @@ bool arrangeDominoes(Dominode* head, unsigned long long int n) {//проверк
         else head = head->next;//иначе двигаемся вперёд
     }
     while (head) {//идём по списку и ищем нод со вторым крайним паттерном
-        if (head->first==nBuffer2||head->second==nBuffer2){
-            if (head->first==nBuffer2){//переворачиваем домино, если искомый паттерн стоит справа
-                int temp=head->second;
-                head->second=head->first;
-                head->first=temp;
+        if (head->pattern[0]==nBuffer2||head->pattern[1]==nBuffer2){
+            if (head->pattern[0]==nBuffer2){//переворачиваем домино, если искомый паттерн стоит справа
+                int temp=head->pattern[1];
+                head->pattern[1]=head->pattern[0];
+                head->pattern[0]=temp;
             }
-            cout<<", "<<head->first<<head->second;
+            cout<<", "<<head->pattern[0]<<head->pattern[1];
             break;
         }
         if (!head->next){
@@ -123,67 +119,5 @@ bool arrangeDominoes(Dominode* head, unsigned long long int n) {//проверк
         }
         else head = head->next;
     }
-    //head=headbuffer->prev;
-    // temp = head;
-    // headbuffer->prev=temp;
-    // head->next=headbuffer;
-    // head->prev=NULL;
-    
-    // cout<<"\n\n";
-    // while (head!=NULL){
-    //     cout<<head->first<<head->second<<" ";
-    //     head=head->next;
-    // }
-    // cout<<"\n\n";
-    
-    // Dominode* tail=head;//конец списка
-    // //Dominode* tailbuffer=tail;
-    // while(tail->next!=NULL){
-    //     tail=tail->next;
-    // }
-    // while (head) {//идём по списку и ищем ноды с крайними паттернами
-    //     Dominode* temp = head;
-    //     if (head->first==nBuffer2||head->second==nBuffer2){
-    //         tail->next=temp;//домино с крайним паттерном переносим в начало
-            
-    //         tail=temp;
-    //         break;
-    //     }
-    //     head = head->next;
-    // }
-    // head=headbuffer->prev;
-    // if (head->second==nBuffer){//если крайний паттерн стоит справа, переворачиваем домино
-    //     int temp=head->second;
-    //     head->second=head->first;
-    //     head->first=temp;
-    // }
-    // headbuffer=head;//обновляем буфер начала списка
-    // int patbuffer;//буфер для второй половины домино
-    // for (int i=0; i<n; i++){
-    //     Dominode* temp=head;
-    //     cout<<head->first<<head->second<<" ";
-    //     patbuffer=head->second;
-    //     delete head;
-    //     while((temp->second==head->next->first||temp->second==head->next->second)&&(head->next->first!=nBuffer2||head->next->second!=nBuffer2)){
-    //         head=head->next;
-    //     }
-    //     head=head->next;
-    //     if (temp->second==head->first){
-    //         cout<<head->first<<head->second<<" ";
-    //     }
-    //     if (temp->second==head->second){//переворачиваем домино если надо
-    //         int temp=head->second;
-    //         head->second=head->first;
-    //         head->first=temp;
-    //         cout<<head->first<<head->second<<" ";
-    //     }
-    // }
     return 1;
 }
-// void freeDominoList(Dominode* head) {
-//     while (head) {//идём по списку и удаляем ноды по очереди
-//         Dominode* temp = head;
-//         head = head->next;
-//         delete temp;
-//     }
-// }
