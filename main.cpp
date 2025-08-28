@@ -38,5 +38,6 @@ int main() {
         int second=stoi(temp);
         addDomino(head, first, second);
     }
-    arrangeDominoes(head,n);//считаем, можно ли сделать ряд; если да, то выводим
+    if (n!=2)arrangeDominoes(head,n);//считаем, можно ли сделать ряд; если да, то выводим
+    else arrangeTwoDominoes(head);
 }

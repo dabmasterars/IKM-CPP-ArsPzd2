@@ -13,3 +13,5 @@ bool isNumber(const string& s);//проверка, является ли стр�
 bool dominoCheck(string s);//проверка, является ли строка числом от 0 до 6
 void addDomino(Dominode*& head, int first, int second);//добавление кости в список
 bool arrangeDominoes(Dominode* head, unsigned long long int n);//проверка, можно ли сделать ряд из домино и вывод этого ряда
+bool arrangeTwoDominoes(Dominode* head);//проверка, можно ли сделать ряд из домино и вывод этого ряда
+void checkIdenticalDominoes(Dominode* head);//проверка одинаковых костей

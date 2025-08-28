@@ -26,6 +26,17 @@ void addDomino(Dominode*& head, int first, int second){
         newDomino->prev = temp;
     }
 }
+void checkIdenticalDominoes(Dominode* head){//проверка одинаковых костей
+    Dominode* target=head;
+    while(target){//если две кости одинаковы или симметричны, то программа закрывается
+        if((target->pattern[0]==head->pattern[0]&&target->pattern[1]==head->pattern[1])
+        ||(target->pattern[0]==head->pattern[1]&&target->pattern[1]==head->pattern[0])){
+            cout<<"Нарушение правил домино: несколько одинаковых костей";
+            exit(0);
+        }
+        target=target->next;//если нет, идём дальше по списку
+    }
+}
 bool arrangeDominoes(Dominode* head, unsigned long long int n) {//проверка, можно ли сделать ряд из домино и вывод этого ряда
     if (!head) return 0;//если список пустой (такого не должно быть, но на всякий случай)
     int degree[7] = {0};//массив для подчёта числа паттернов (a[i]=x - паттерн с i точками встречается x раз)
@@ -36,6 +47,11 @@ bool arrangeDominoes(Dominode* head, unsigned long long int n) {//проверк
         temp=temp->next;
     }
     
+    Dominode* tempIdentical = head;
+    while (tempIdentical->next){//проверяем, не повторяется ли домино (это против правил)
+        checkIdenticalDominoes(tempIdentical);
+        tempIdentical=tempIdentical->next;//делаем операцию с каждым домино
+    }
     //Паттерны точек у примыкающих половинок разных домино в ряду должны совпадать. Из этого следует,
     //то что количество половинок домино с одинаковым паттерном точек должно быть чётное,
     //за возможным исключением двух половинок, которые могут встречаться в нечётном количестве: они стоят в начале и в конце ряда.
@@ -119,5 +135,42 @@ bool arrangeDominoes(Dominode* head, unsigned long long int n) {//проверк
         }
         else head = head->next;
     }
+    return 1;
+}
+bool arrangeTwoDominoes(Dominode* head) {//проверка, можно ли сделать ряд из домино и вывод этого ряда
+    if (!head) return 0;//если список пустой (такого не должно быть, но на всякий случай)
+    int degree[7] = {0};//массив для подчёта числа паттернов (a[i]=x - паттерн с i точками встречается x раз)
+    Dominode* temp = head;
+    while (temp){//идём по списку и заносим точки в массив
+        degree[temp->pattern[0]]++;
+        degree[temp->pattern[1]]++;
+        temp=temp->next;
+    }
+    
+    checkIdenticalDominoes(head);//проверяем, не повторяется ли домино (это против правил)
+    
+    short int nBuffer, nBuffer2;//запоминаем паттерны, которые встречаются нечётное количество раз...
+    int patbuffer;//...а также паттерн второй половины домино (когда будем составлять ряд)
+    bool bufCheck=1;//для переключения между буферами в цикле (сначала nBuffer, потом nBuffer2)
+    int oddCount = 0;//проверяем число паттернов, которые встречаются нечётное количество раз
+    for (int i = 0; i < 7; i++) {
+        if (degree[i] % 2 != 0) {
+            oddCount++;
+            if(bufCheck){nBuffer=i; bufCheck=0;}
+            else nBuffer2=i;
+        }
+    }
+    if (oddCount>0){//проверяем условие
+        cout << "Невозможно расставить кости в ряд" << endl;
+        exit(0);
+    }
+    cout<<"Можно уложить кости так: "<<head->pattern[0]<<head->pattern[1];
+    head=head->next;
+    if(head->prev->pattern[1]==head->pattern[1]){
+        int temp=head->pattern[1];
+        head->pattern[1]=head->pattern[0];
+        head->pattern[0]=temp;
+    }
+    cout<<", "<<head->pattern[0]<<head->pattern[1];
     return 1;
 }
